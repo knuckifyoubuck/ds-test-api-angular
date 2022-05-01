@@ -1,0 +1,33 @@
+.dashboard-table {
+  width: 100%;
+}
+
+.dashboard-table__image {
+  border-radius: 8px;
+  object-fit: cover;
+  min-width: 50px;
+  max-width: 150px;
+  height: auto;
+}
+
+tr.user-assessment-report-row {
+  height: 0;
+}
+
+tr.user-assessment-report-row:not(.expanded-row):hover {
+  background: whitesmoke;
+}
+
+tr.user-assessment-report-row:not(.expanded-row):active {
+  background: #efefef;
+}
+
+.user-assessment-report-row td {
+  border-bottom-width: 0;
+}
+
+.user-assessment-record__detail {
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+}

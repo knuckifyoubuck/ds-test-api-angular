@@ -1,0 +1,14 @@
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  padding: 20px;
+  margin: 0 150px 0 150px;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
