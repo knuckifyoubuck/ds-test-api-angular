@@ -1,0 +1,20 @@
+<mat-toolbar class="dashboard-menu">
+  <button
+    mat-raised-button
+    routerLink="/dashboard"
+    routerLinkActive="active-link">
+      Dashboard
+  </button>
+  <button
+    mat-raised-button
+    routerLink="/admin"
+    routerLinkActive="active-link"
+    *ngIf="this.auth.getToken() == 'QWRtaW5Vc2Vy'">
+      Admin panel
+  </button>
+  <button
+    mat-raised-button
+    (click)="onLogout()">
+      Logout
+  </button>
+</mat-toolbar>

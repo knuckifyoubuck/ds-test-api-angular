@@ -1,0 +1,11 @@
+.dashboard-menu {
+  display: flex;
+  justify-content: space-evenly;
+  min-width: 600px;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.active-link {
+  background-color: pink;
+}
