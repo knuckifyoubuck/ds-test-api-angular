@@ -16,6 +16,8 @@ import { AdminGuardService } from "./AuthModule/services/admin-guard.service";
 import { AuthModule } from "./AuthModule/auth.module";
 import { DashboardModule } from "./DashboardModule/dashboard.module";
 
+import { UsersResolver } from "./DashboardModule/admin-dashboard/UsersResolver/users.resolver";
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -23,15 +25,31 @@ import { DashboardModule } from "./DashboardModule/dashboard.module";
     DashboardModule,
     BrowserModule,
     RouterModule.forRoot([
-      {path: 'login', component: LoginComponent},
-      {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService]},
-      {path: 'admin', component: AdminDashboardComponent, canActivate: [AdminGuardService]},
-      {path: '**', redirectTo: '/login'},
+      {
+        path: 'login',
+        component: LoginComponent
+      },
+      {
+        path: 'dashboard',
+        component: DashboardComponent,
+        canActivate: [AuthGuardService]
+      },
+      {
+        path: 'admin',
+        component: AdminDashboardComponent,
+        canActivate: [AdminGuardService],
+        resolve: {payload: UsersResolver}
+      },
+      {
+        path: '**',
+        redirectTo: '/login'
+      },
     ]),
     StoreModule.forRoot(reducers, {}),
     EffectsModule.forRoot([AuthEffects]),
   ],
   providers: [
+    UsersResolver
   ],
   bootstrap: [AppComponent]
 })

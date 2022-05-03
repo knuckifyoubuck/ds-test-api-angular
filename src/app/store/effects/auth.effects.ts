@@ -60,15 +60,11 @@ export class AuthEffects {
     )
   ));
 
+
   LogInSuccess$ = createEffect(() => this.actions$.pipe(
     ofType(LogInSuccess),
     tap(user => {
       localStorage.setItem('token', user.token);
-
-      // if (localStorage.getItem('token') === 'QWRtaW5Vc2Vy')
-      //   this.router.navigateByUrl('/admin-dashboard')
-      // else if (localStorage.getItem('token') === 'VXNlclVzZXI=')
-      //   this.router.navigateByUrl('/user');
       if (user.role == 'Admin' || user.role == 'User'){
         this.router.navigateByUrl('/dashboard');
       }
