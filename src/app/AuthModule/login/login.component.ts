@@ -1,64 +1,62 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from "@angular/forms";
-import { Store } from "@ngrx/store";
-
-import { User } from "../models/user";
-import { AppState, selectAuthState } from "../../store/app.states";
-import { LogIn } from '../../store/actions/auth.actions'
-import { Observable } from "rxjs";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, FormBuilder, Validators } from "@angular/forms";
 import { MatSnackBar } from "@angular/material/snack-bar";
+import { Store } from "@ngrx/store";
+import { AppState } from "../../store/app.states";
+import { User } from "../models/user";
+import { selectErrorMessage } from "../../store/selectors/auth.selectors";
+import { login } from '../../store/actions/auth.actions'
+import { Subject, takeUntil } from "rxjs";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  user: User = new User();
-  getState: Observable<any>;
-  errorMessage: string;
+  user = new User();
+  errorMessage$= this.store.select(selectErrorMessage);
+  destroy$: Subject<Boolean> = new Subject<Boolean>();
+
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required, Validators.minLength(8)]]
+  });
 
   constructor(
     private fb: FormBuilder,
     private store: Store<AppState>,
     private _snackBar: MatSnackBar
-  ) {
-    this.getState = this.store.select(selectAuthState);
+  ) { }
+
+  ngOnInit(): void { }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
-  ngOnInit(): void {
-    this.getState.subscribe((state) => {
-      this.errorMessage = state.errorMessage;
-    })
+  get email(): AbstractControl {
+    return <AbstractControl>this.loginForm.get('email');
   }
 
-  loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]]
-  })
-
-  get email(): any {
-    return this.loginForm.get('email');
-  }
-
-  get password(): any {
-    return this.loginForm.get('password');
+  get password(): AbstractControl {
+    return <AbstractControl>this.loginForm.get('password');
   }
 
   onSubmit(): void {
-    this.store.dispatch(LogIn({
+    this.store.dispatch(login({
       email: this.user.email,
-      password: this.user.password,
+      password: this.user.password!,
     }));
   }
 
-  errorMessageSnackBar(message: string, action: string, duration: number) {
-    if (this.errorMessage) {
-      this._snackBar.open(message, action, {
-        duration: duration * 1000,
-      });
-    }
+  errorMessageSnackBar(): void {
+    this.errorMessage$.pipe(takeUntil(this.destroy$)).subscribe(errorMessage => {
+      if (errorMessage) {
+        this._snackBar.open(errorMessage, 'Ok', {duration: 2000});
+      }
+    });
   }
 
 }

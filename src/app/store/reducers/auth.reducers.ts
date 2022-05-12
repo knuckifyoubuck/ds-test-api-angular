@@ -1,22 +1,22 @@
 import { User } from "../../AuthModule/models/user";
-import {LogInFailure, LogInSuccess, LogOut} from "../actions/auth.actions";
+import { loginFailure, loginSuccess, logout } from "../actions/auth.actions";
 import { createReducer, on } from "@ngrx/store";
 
-export interface State {
+export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   errorMessage: string | null;
 }
 
-export const initialState: State = {
+export const initialState: AuthState = {
   isAuthenticated: false,
   user: null,
   errorMessage: null,
 };
 
-export const reducer = createReducer(
+export const authReducer = createReducer(
   initialState,
-  on(LogInSuccess, (state, action) => ({
+  on(loginSuccess, (state, action) => ({
     ...state,
     isAuthenticated: true,
     user: {
@@ -28,9 +28,9 @@ export const reducer = createReducer(
     },
     errorMessage: null
   })),
-  on(LogInFailure, (state) => ({
+  on(loginFailure, (state) => ({
     ...state,
     errorMessage: 'Incorrect email and/or password'
   })),
-  on(LogOut, () => initialState)
+  on(logout, () => initialState)
 )

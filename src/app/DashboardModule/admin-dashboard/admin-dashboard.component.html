@@ -1,5 +1,5 @@
 <app-dashboard-menu></app-dashboard-menu>
-<table mat-table [dataSource]="users" class="users-table">
+<table mat-table [dataSource]="users$" class="users-table">
   <ng-container matColumnDef="first_name">
     <th mat-header-cell *matHeaderCellDef>First Name</th>
     <td mat-cell *matCellDef="let row">{{row.first_name}}</td>
