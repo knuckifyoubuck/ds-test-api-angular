@@ -9,6 +9,7 @@ export const environment = {
   UserAssessmentsAPI: '/userassessments',
   UserAssessmentsGraphAPI: '/userassessment/graph',
   AdminUsersAPI: '/users',
+  AdminToken: 'QWRtaW5Vc2Vy',
 };
 
 

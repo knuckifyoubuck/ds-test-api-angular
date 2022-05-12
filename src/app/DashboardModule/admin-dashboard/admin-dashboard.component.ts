@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
-import { UsersService } from "../services/users.service";
-import { Users } from "../models/users";
 import { ActivatedRoute } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { AppState } from "../../store/app.states";
+import { selectDashboardUsers } from "../../store/selectors/dashboard.selectors";
+import { admin_users } from "../../store/actions/dashboard.actions";
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -12,12 +13,13 @@ import { ActivatedRoute } from "@angular/router";
 export class AdminDashboardComponent implements OnInit {
 
   displayedColumns: string[] = ["first_name", "last_name", "email", "user_groups"];
-  usersService: UsersService;
-  users: Users[] = [];
-  constructor(private http: HttpClient, private route: ActivatedRoute) { }
+  //users: Users[] = [];
+  users$ = this.store.select(selectDashboardUsers);
+  constructor(private route: ActivatedRoute, private store: Store<AppState>) { }
 
   ngOnInit(): void {
-    this.users = this.route.snapshot.data['payload'];
+    this.store.dispatch(admin_users());
+    //this.users = this.route.snapshot.data['payload'];
   }
 
 }

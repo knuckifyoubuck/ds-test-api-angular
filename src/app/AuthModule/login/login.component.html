@@ -23,7 +23,11 @@
     </mat-error>
   </mat-form-field>
 
+<!--  <mat-error *ngIf="errorMessage$ | async as errorMessage">-->
+<!--    {{errorMessage}}-->
+<!--  </mat-error>-->
+
   <div class="login-form__subbmit_center">
-    <button mat-flat-button color="primary" class="submit-button" [disabled]="!loginForm.valid" (click)="errorMessageSnackBar(errorMessage, 'close', 3)">Submit</button>
+    <button mat-flat-button color="primary" class="submit-button" [disabled]="!loginForm.valid" (click)="errorMessageSnackBar()">Submit</button>
   </div>
 </form>

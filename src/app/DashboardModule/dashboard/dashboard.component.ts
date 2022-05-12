@@ -1,10 +1,12 @@
 import { AfterViewInit, Component } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
 import { UserAssessmentService } from "../services/user-assessment.service";
-import { UserAssessment } from "../models/user-assessment";
 import { UserAssessmentReport } from "../models/user-assessment-report";
-import { UserAssessmentChartData } from "../models/user-assessment-chart-data";
 import { animate, state, style, transition, trigger } from "@angular/animations";
+import { Store } from "@ngrx/store";
+import { AppState } from "../../store/app.states";
+import { selectUserAssessmentChartData, selectUserAssessmentData } from "../../store/selectors/dashboard.selectors";
+import { user_assessment, user_assessment_graph } from "../../store/actions/dashboard.actions";
 
 @Component({
   selector: 'app-dashboard',
@@ -21,43 +23,25 @@ import { animate, state, style, transition, trigger } from "@angular/animations"
 export class DashboardComponent implements AfterViewInit {
 
   displayedColumns: string[] = [ "id", "name", "users_resolved", "active", "image_url"];
-  userAssessmentsService: UserAssessmentService;
-  userAssessmentData: UserAssessment[] = [];
-  userAssessmentReport: UserAssessmentReport;
-  userAssessmentChartData: UserAssessmentChartData[] = [];
+  userAssessmentData$ = this.store.select(selectUserAssessmentData);
+  userAssessmentChartData$ = this.store.select(selectUserAssessmentChartData);
 
   expandedElement: UserAssessmentReport | null;
 
   isLoadingResults = true;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private userAssessmentsService: UserAssessmentService,
+    private store: Store<AppState>
+  ) { }
 
   ngAfterViewInit(): void {
-    this.userAssessmentsService = new UserAssessmentService(this.http);
-
-    this.userAssessmentsService.getUserAssessments()
-      .subscribe(data => {
-        this.userAssessmentData = data;
-      })
+    this.store.dispatch(user_assessment());
   }
 
   onUserAssessmentRow(id: number): void {
-    this.userAssessmentsService.getUserAssessmentReports(id)
-      .subscribe(data => {
-        this.userAssessmentReport = data;
-        this.userAssessmentChartData = this.formatChartData(this.userAssessmentReport.data);
-      })
-  }
-
-  formatChartData(data: any): UserAssessmentChartData[] {
-    let formattedData: UserAssessmentChartData[] = [];
-    for (let key in data) {
-      formattedData.push({
-        name: key,
-        value: data[key]
-      })
-    }
-    return formattedData;
+    this.store.dispatch(user_assessment_graph({id}));
   }
 
 }

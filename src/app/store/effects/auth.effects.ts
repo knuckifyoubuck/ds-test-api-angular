@@ -2,49 +2,33 @@ import { Injectable } from '@angular/core';
 
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { catchError, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { AuthService } from "../../AuthModule/services/auth.service";
 import {
-  LogIn,
-  LogInSuccess,
-  LogInFailure, LogOut
+  login,
+  loginSuccess,
+  loginFailure,
+  logout
 } from '../actions/auth.actions';
-import { Store } from "@ngrx/store";
-import { AppState, selectAuthState } from "../app.states";
-import { User } from "../../AuthModule/models/user";
 
 @Injectable()
 export class AuthEffects {
 
-  getState: Observable<any>;
-  user: User = {};
-
   constructor(
     private actions$: Actions,
     private authService: AuthService,
-    private router: Router,
-    private store: Store<AppState>
-  ) {
-    this.getState = this.store.select(selectAuthState);
-  }
-
-  ngOnInit(): void {
-    this.getState.subscribe((state) => {
-      this.user = state.user;
-    })
-    console.log(this.user);
-  }
+    private router: Router
+  ) { }
 
   LogIn$ = createEffect(() => this.actions$.pipe(
-    ofType(LogIn),
+    ofType(login),
     switchMap(action =>
       this.authService.logIn(action.email, action.password)
         .pipe(
           map(user => {
-            console.log(user);
-            return LogInSuccess({
+            return loginSuccess({
               token: user.token,
               email: action.email,
               first_name: user.first_name,
@@ -53,16 +37,14 @@ export class AuthEffects {
             });
           }),
           catchError((error) => {
-            console.log(error);
-            return of(LogInFailure({error: error}));
+            return of(loginFailure({error: error}));
           })
         )
     )
   ));
 
-
   LogInSuccess$ = createEffect(() => this.actions$.pipe(
-    ofType(LogInSuccess),
+    ofType(loginSuccess),
     tap(user => {
       localStorage.setItem('token', user.token);
       if (user.role == 'Admin' || user.role == 'User'){
@@ -72,13 +54,14 @@ export class AuthEffects {
   ), {dispatch: false});
 
   LogInFailure$ = createEffect(() => this.actions$.pipe(
-    ofType(LogInFailure)
+    ofType(loginFailure)
   ), {dispatch: false});
 
   LogOut$ = createEffect(() => this.actions$.pipe(
-    ofType(LogOut),
+    ofType(logout),
     tap(() => {
       localStorage.removeItem('token')
+      this.router.navigateByUrl('/log-in');
     })
   ), {dispatch: false})
 }

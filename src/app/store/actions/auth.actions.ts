@@ -7,26 +7,26 @@ export enum AuthActionTypes {
   LOGOUT = '[Auth] Logout'
 }
 
-export const LogIn = createAction(
+export const login = createAction(
   AuthActionTypes.LOGIN,
-  props<{email: string | undefined, password: string | undefined}>()
+  props<{email: string, password: string}>()
 );
 
-export const LogInSuccess = createAction(
+export const loginSuccess = createAction(
   AuthActionTypes.LOGIN_SUCCESS,
   props<{
-    email: string | undefined,
+    email: string,
     token: string,
     first_name: string,
     last_name: string,
     role: string}>()
 )
 
-export const LogInFailure = createAction(
+export const loginFailure = createAction(
   AuthActionTypes.LOGIN_FAILURE,
-  props<{error: string | undefined}>()
+  props<{error: string}>()
 )
 
-export const LogOut = createAction(
+export const logout = createAction(
   AuthActionTypes.LOGOUT
 )

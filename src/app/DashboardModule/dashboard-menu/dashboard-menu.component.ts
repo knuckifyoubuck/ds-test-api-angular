@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
 import { Store } from "@ngrx/store";
-
 import { AppState } from "../../store/app.states";
-import { Router } from "@angular/router";
-import { LogOut } from "../../store/actions/auth.actions";
 import { AuthService } from "../../AuthModule/services/auth.service";
+import { logout } from "../../store/actions/auth.actions";
+import { logout_clear } from "../../store/actions/dashboard.actions";
 
 @Component({
   selector: 'app-dashboard-menu',
@@ -15,13 +14,12 @@ export class DashboardMenuComponent {
 
   constructor(
     private store: Store<AppState>,
-    private router: Router,
     public auth: AuthService
   ) { }
 
   onLogout(): void {
-    this.store.dispatch(LogOut());
-    this.router.navigateByUrl('/log-in');
+    this.store.dispatch(logout());
+    this.store.dispatch(logout_clear());
   }
 
 }
